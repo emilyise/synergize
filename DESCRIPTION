@@ -1,9 +1,12 @@
-Package: 2026_Synergy_Screens_LBS007
-Title: What the Package Does (One Line, Title Case)
+Package: synergize
+Title: Easily analyze synergy data from the Janus drug printer. 
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+    person("Emily", "Isenhart", , "emily.isenhart@roswellpark.org", role = c("aut", "cre"))
+Description: Easily analyze syergy data from the Janus drug printer. Includes 
+    scripts to lazily read in absorbance files, process the protocol generated 
+    by the drug printer, align the absorbance with the protocol, calculate 
+    percent viability from absorbance data, and plot data using SynergyFinder. 
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
 Encoding: UTF-8
