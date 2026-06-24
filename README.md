@@ -13,7 +13,6 @@ assay read at 450 nm 6 hours after treatment with CCK-8.
 Optional script - if you're loading many csv absorbance files into your 
 environment, this guy can help you out. 
 
-use 
 ```
 egi_read_ab()
 ```
@@ -25,7 +24,6 @@ table with rownames to be deleted. Takes the median value of each concentration
 (based on dispensed volume) to resolve float digits. Each concentration much
 match exactly to form a matrix or values will be imputed downstream. 
 
-use 
 ```
 egi_read_prot()
 ```
@@ -33,7 +31,6 @@ egi_read_prot()
 ## Calculate Percent Viability
 As simple as it sounds. Calculate percent viability from absorbance data. 
 
-use 
 ```
 egi_percent_viability()
 ```
@@ -42,7 +39,6 @@ egi_percent_viability()
 Function to align percent viability and protocol into the format required by
 SynergyFinder.
 
-use 
 ```
 egi_align_synergy()
 ```
@@ -52,7 +48,6 @@ And finally, plot the data! This will produce 2D synergy plots, dose response
 plots, synergy bar plots, and a ZIP synergy score matrix for each drug 
 combination. 
 
-use 
 ```
 egi_plot_this()
 ```
