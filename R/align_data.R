@@ -1,11 +1,9 @@
 # function to align percent viability data with the protocol data 
 
-# cell_line <- "A673"
-# plate_pv <- pvs[[1]]
-# protocol <- prot 
-# background <- bgs[[1]]
-# z_b1 <- b1_zero
-# z_b2 <- b2_zero
+# needs cell line, the percent viability for the plate, the protocol as 
+# processed by proccess_protocol, the background wells, and the well in each
+# block that is part of the synergy matrix but that recieved none of either
+# drug one or drug two
 
 egi_align_synergy <- function(cell_line, plate_pv, protocol, background, 
                               z_b1, z_b2){

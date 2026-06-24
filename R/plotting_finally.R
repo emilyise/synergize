@@ -1,4 +1,5 @@
 # function to make a thousand plots from our data whoooo 
+# see SynergyFinder documentation for more info 
 
 egi_plot_this <- function(proj, cell_lines, drug_combos, res_list){
   for(i in seq_along(cell_lines)){

@@ -12,10 +12,6 @@
 ### were run as LINE1 LINE1 LINE2 LINE2 (this could def be fixed down the line
 ### to read straight from the protocol metadata but it couldn't be me right now)
 
-# ss.protocol <- prot
-# n.plates <- 4
-# cell.lines <- c("A673", "TC32", "RDES", "U2OS")
-
 egi_read_prot <- function(ss.protocol, n.plates, cell.lines){
   
   # minor changes for data manip

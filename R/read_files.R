@@ -1,4 +1,5 @@
 # read in files, but lazy 
+## don't need to do this to use downstream scripts 
 
 egi_read_abs <- function(path, protocolname){
   
