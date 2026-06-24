@@ -1,6 +1,6 @@
 # Welcome to synergize! 
 
-If you're here, you may be working on synergy datasets from a "drug printer."  
+If you're here, you may be working on synergy datasets from a "drug printer." 
 Hope this helps! 
 
 In our workflow, cells are plated in 384 well plates, with two blocks - where 
