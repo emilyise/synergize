@@ -16,6 +16,7 @@ library(reshape2)
 library(devtools)
 library(knitr)
 library(ggplot2)
+library(magick)
 
 # load functions 
 devtools::load_all()
@@ -146,7 +147,7 @@ for (i in seq_along(res.list)){
 ```
 
 
-
+# Plot
 ```{r, echo = F}
 project <- "260630"
 clines <- c("A673", "TC32", "TC71", "U2OS", "HT1080")
@@ -156,4 +157,10 @@ rlist <- res.list
 egi_plot_this(project, clines, dcombos, rlist)
 ```
 
+
+# Report
+```{r}
+# if "cache resources exhausted" run gc()
+egi_generate_report("../figures/260630", clines, grid_panel_size = "x700")
+```
 
