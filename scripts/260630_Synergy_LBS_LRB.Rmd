@@ -1,0 +1,159 @@
+---
+title: "Synergy Screen: LBS007 x LRB | TAS102 x Navitoclax (ABT263)"
+output: html_document
+---
+
+# Setup 
+
+```{r Setup, message = F}
+set.seed(5014) 
+
+# loading libraries 
+library(synergyfinder)
+library(tidyverse)
+library(magrittr)
+library(reshape2)
+library(devtools)
+library(knitr)
+library(ggplot2)
+
+# load functions 
+devtools::load_all()
+
+# loading data
+r.list <- egi_read_abs("../data_raw/260630_Screen/", "DrugPrinter")
+list2env(r.list, envir = .GlobalEnv)
+
+
+prot <- read.csv("../data_raw/260630_Screen/260630_DrugPrinterProtocol.csv",
+                header = F, na.strings = "")
+
+# prep data 
+prot <- egi_read_prot(prot, 5, c("A673", "TC32", "TC71", "U2OS", "HT1080"))
+
+# print examples 
+kable(A673)
+kable(head(prot))
+```
+
+
+# Percent Viability
+```{r Calculate Percent Viability}
+# set DMSO control for all plates (same protocol)
+## and add in the zero well where neither drug is dispensed in the matrix
+## for downstream analysis 
+b1_dmso <- c(paste0(rep("L"), 3:10), paste0(rep("M"), 3:10))
+b1_zero <- "K03"
+
+b2_dmso <- c(paste0(rep("L"), 15:22), paste0(rep("M"), 15:22))
+b2_zero <- "K15"
+
+# A673 background 
+a.bg <- as.vector(sapply(LETTERS[3:14], function(x) paste0(c(x), c(12,13))))
+
+# TC32 background 
+t3.bg <- as.vector(sapply(LETTERS[3:14], function(x) paste0(c(x), c(12,13))))
+
+# TC71 background 
+t7.bg <- as.vector(sapply(LETTERS[3:14], function(x) paste0(c(x), c(12,13))))
+
+# U2OS background 
+u.bg <- as.vector(sapply(LETTERS[3:14], function(x) paste0(c(x), c(12,13))))
+
+# HT1080 background 
+h.bg <- as.vector(sapply(LETTERS[3:14], function(x) paste0(c(x), c(12,13))))
+
+# setup for apply 
+## list plates
+plates <- list(A673,
+               TC32,
+               TC71,
+               U2OS,
+               HT1080)
+
+## list background 
+bgs <- list(a.bg,
+            t3.bg,
+            t7.bg,
+            u.bg,
+            h.bg)
+
+# run calcs 
+pvs <- list()
+for (i in seq_along(plates)){
+  pvs[[i]] <- egi_percent_viability(plates[[i]], bgs[[i]], b1_dmso, b2_dmso)
+}
+```
+
+
+# Data Wrangling: Align Percent Viability with Protocol 
+```{r}
+clines <- c("A673", "TC32", "TC71", "U2OS", "HT1080")
+
+sf.data <- list()
+for (i in seq_along(plates)){
+ sf.data[[i]] <- egi_align_synergy(clines[i], pvs[[i]], prot, bgs[[i]],
+                                   b1_zero, b2_zero)
+}
+
+# now, append them all into one df
+a.full <- sf.data[[1]]
+t3.full <- sf.data[[2]]
+t7.full<- sf.data[[3]]
+u.full <- sf.data[[4]]
+h.full <- sf.data[[5]]
+```
+
+
+# Processing 
+```{r, echo = F}
+#data reshaping and pre-processing
+a.res <- ReshapeData(a.full, 
+                   impute = T,
+                   seed = 5014)
+
+t3.res <- ReshapeData(t3.full,
+                   impute = T,
+                   seed = 5014)
+
+t7.res <- ReshapeData(t7.full,
+                   impute = T,
+                   seed = 5014)
+
+u.res <- ReshapeData(u.full,
+                   impute = T,
+                   seed = 5014)
+
+h.res <- ReshapeData(h.full,
+                   impute = T,
+                   seed = 5014)
+
+res.list <- list(a.res, t3.res, t7.res, u.res, h.res)
+```
+
+
+# Synergy and Sensitiviy Analysis
+```{r, echo = F}
+
+for (i in seq_along(res.list)){
+  res.list[[i]] <- CalculateSynergy(
+    data = res.list[[i]],
+    method = c("ZIP", "HSA", "Bliss", "Loewe"),
+    Emin = NA,
+    Emax = NA,
+    correct_baseline = "non")
+}
+```
+
+
+
+```{r, echo = F}
+project <- "260616"
+clines <- c("A673", "TC32", "TC71", "U2OS", "HT1080")
+dcombos <- c("LBS007 x LRB", "TAS102 x Navitoclax (ABT263)")
+rlist <- res.list
+
+egi_plot_this(project, clines, dcombos, rlist)
+```
+
+
