@@ -143,8 +143,6 @@ clines <- c("A673", "TC32", "RDES", "U2OS")
 dcombos <- c("LRBxLBS", "IRNxLBS")
 rlist <- res.list
 
-devtools::load_all()
-
 egi_plot_this(project, clines, dcombos, rlist)
 ```
 

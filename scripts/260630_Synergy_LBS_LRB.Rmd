@@ -148,9 +148,9 @@ for (i in seq_along(res.list)){
 
 
 ```{r, echo = F}
-project <- "260616"
+project <- "260630"
 clines <- c("A673", "TC32", "TC71", "U2OS", "HT1080")
-dcombos <- c("LBS007 x LRB", "TAS102 x Navitoclax (ABT263)")
+dcombos <- c("LBS007xLRB", "TAS102xNavitoclax")
 rlist <- res.list
 
 egi_plot_this(project, clines, dcombos, rlist)
