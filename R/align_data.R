@@ -57,29 +57,27 @@ egi_align_synergy <- function(cell_line, plate_pv, protocol, background,
   ## for cells that only received drug 2, move to drug 2 and conc 2
   drug.two <- unique(na.omit(protocol$drug2))
   
-  for(i in which(protocol$drug1 == drug.two)){
+  for(i in which(protocol$drug1 %in% drug.two)){
     protocol$drug2[i] = protocol$drug1[i]
     protocol$conc2[i] = protocol$conc1[i]
     protocol$drug1[i] = NA
     protocol$conc1[i] = 0
   }
   
-  ## for cells that only received drug 1, add drug 2 and conc 3 
-  for(i in which(is.na(protocol$drug2))){
-    protocol$drug2[i] = drug.two
-    protocol$conc2[i] = 0
-    }
-  
-  ## for cells that only received drug 2, add drug 1 for block 1 
-  drug.one <- unique(na.omit(protocol$drug1[which(protocol$block_id == 1)]))
-  
-  for(i in which(protocol$block_id == 1 & is.na(protocol$drug1))){
-    protocol$drug1[i] = drug.one
-  }
-  
+  ## for cells that only received drug 1, add drug 2 and conc 2
+  protocol %<>%
+    group_by(block_id) %>%
+    mutate(drug2 = replace_na(drug2, na.omit(unique(drug2))),
+           conc2 = replace_na(conc2, 0)) %>%
+    # for cells that only received drug 2, add drug 1 
+    mutate(drug1 = replace_na(drug1, na.omit(unique(drug1)))) %>%
+    ungroup()
+
   ### add the 0 drug well in the matrix in block 1 
   z_add <- plate_pv %>% filter(cell == z_b1)
   z_add <- z_add$response
+  drug.one <- unique(protocol$drug1[which(protocol$block_id == 1)])
+  drug.two <- unique(protocol$drug2[which(protocol$block_id == 1)])
   z_add <- list("block_id" = 1,
                 "conc_unit" = "uM", 
                 "drug1" = drug.one, 
@@ -90,16 +88,11 @@ egi_align_synergy <- function(cell_line, plate_pv, protocol, background,
   
   protocol <- rbind(protocol, z_add)
   
-  ## for cells that only received drug 2, add drug 1 for block 2
-  drug.one <- unique(na.omit(protocol$drug1[which(protocol$block_id == 2)]))
-  
-  for(i in which(protocol$block_id == 2 & is.na(protocol$drug1))){
-    protocol$drug1[i] = drug.one
-  }
-  
   ### add the 0 drug well in the matrix in block 2
   z_add <- plate_pv %>% filter(cell == z_b2)
   z_add <- z_add$response
+  drug.one <- unique(protocol$drug1[which(protocol$block_id == 2)])
+  drug.two <- unique(protocol$drug2[which(protocol$block_id == 2)])
   z_add <- list("block_id" = 2,
                 "conc_unit" = "uM", 
                 "drug1" = drug.one, 
